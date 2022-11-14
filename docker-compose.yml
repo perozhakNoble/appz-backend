@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  app:
+    build: .
+    command: bash -c "pip3 install -r requirements.txt && alembic upgrade head && uvicorn main:app --host 0.0.0.0 --port 80"
+    volumes:
+      - .:/app
+    ports:
+      - 8080:80
+    depends_on:
+      - postgres
+
+  postgres:
+    image: "postgres:12.5-alpine"
+    container_name: expenses_reports_db
+    ports:
+      - "5435:5432"
+    volumes:
+      - "./docker/postgres:/var/lib/postgresql/data"
+    environment:
+      POSTGRES_DB: expenses_reports
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
